@@ -1,0 +1,49 @@
+.do-logout {
+  float: right;
+  margin: -210px 0 0 0;
+  &:hover {
+    cursor: pointer;
+    text-align: right;
+  }
+}
+
+.search-form-box {
+  width: 80%;
+  margin: 0 auto 100px;
+}
+
+.form-container,
+.search-result {
+  display: block;
+  float: left;
+}
+
+.clearfix {
+  overflow: auto;
+}
+
+.form-container {
+  display: table;
+  width: 50%;
+  height: 299px;
+  text-align: center;
+  margin: 0 auto;
+
+  span {
+    display: table-cell;
+    vertical-align: middle;
+  }
+}
+
+.search-result .poster {
+  height: 250px;
+}
+
+.result-table-body img {
+  height: 100px;
+}
+
+.saved-result-table {
+  width: 80%;
+  margin: 0 auto;
+}

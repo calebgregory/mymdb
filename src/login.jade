@@ -1,0 +1,16 @@
+extends ./_partials/_layout
+
+block content
+  .on-login-page
+    .login-container
+      h1 Login
+      form
+        .form-group
+          label(for="email") Email address
+          input.form-control(type="email" name="email" placeholder="Enter email" required)
+        .form-group
+          label(for="password") Password
+          input.form-control(type="password" name="password" placeholder="password" required)
+        button.btn.btn-default(type="submit") Login
+        button.btn.btn-default.do-register(type="button") Sign Up
+        button.btn.btn-default.do-reset-password(type="button") Reset Password

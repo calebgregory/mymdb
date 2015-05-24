@@ -1,0 +1,21 @@
+extends ./_partials/_layout
+
+block content
+  .on-main-page
+    a.do-logout logout
+    .row.search-form-box
+      .form-container.col-sm-6
+        span
+          input(type="text" name="title" placeholder="Title")
+          input(type="button" name="search" value="Search")
+      .search-result.col-sm-6
+    .saved-result-table
+      table.table
+        thead
+          tr
+            th Poster
+            th Title
+            th Year
+            th Rating
+            th Watched
+        tbody.result-table-body

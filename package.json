@@ -1,0 +1,32 @@
+{
+  "name": "mymdb",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "./node_modules/.bin/hs -a localhost -p $((RANDOM + 10000)) -o",
+    "build": "./build.sh",
+    "start": "npm run build; npm run server",
+    "deploy": "npm run build; ./deploy.sh",
+    "watch": "./watch.sh; npm run server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/calebgregory/mymdb"
+  },
+  "author": "Caleb Gregory <calebgregory@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/calebgregory/mymdb/issues"
+  },
+  "homepage": "https://github.com/calebgregory/mymdb",
+  "devDependencies": {
+    "babel": "^5.4.4",
+    "bowcat": "0.0.4",
+    "http-server": "^0.8.0",
+    "jade": "^1.9.2",
+    "node-sass": "^3.1.1",
+    "nodemon": "^1.3.7"
+  }
+}
