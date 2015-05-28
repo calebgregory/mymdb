@@ -1,7 +1,8 @@
 var API_URL = 'http://www.omdbapi.com/?t=TITLE&y=&plot=short&r=json';
 var FIREBASE_URL = 'https://mymoviedatabase.firebaseio.com';
 var fb = new Firebase(FIREBASE_URL);
-
+var movies;
+var initLoad = true;
 
 // Takes data from the AJAX Request initialized on the click
 // of the search button, sets it to local variables and
@@ -144,23 +145,15 @@ function tableElement (poster, title, year, rating, id) {
 // ".saved-result-table" using retrieveTableValues().
 $(window).load(function() {
 
-  if(fb.getAuth()) {
+  fb.onAuth(function(authData) {
+    movies = fb.child(`users/${fb.getAuth().uid}/movies`);
+    movies.on('child_added', function(snap) {
+      retrieveTableValues(snap.val(), snap.key()); // movies[id], id
+    }, function(err) {
+      console.log(err.code);
+    })
+  })
 
-    var uid = fb.getAuth().uid;
-    var token = fb.getAuth().token;
-
-    $.get(`${FIREBASE_URL}/users/${uid}/movies.json?auth=${token}`,
-    function(movies) {
-      if (movies) {
-
-        Object.keys(movies)
-        .forEach(function(id) {
-          retrieveTableValues (movies[id], id);
-        });
-
-      }
-    });
-  }
 });
 
 // On click, takes the value of "title" entered by a user, appends
@@ -174,6 +167,7 @@ $('input[name="search"]').click(function() {
     return $('input[name="title"]').val(); // title of the movie entered
   });
 
+  // API request
   $.get(URL, setDisplayValues);
 
 })
@@ -191,8 +185,6 @@ $('.search-result').on('click', 'input[name="add"]', function () {
   var year = $(this).siblings('.year')[0].textContent;
   var rating = $(this).siblings('.rating')[0].textContent;
 
-  $('.result-table-body').append(tableElement(poster, title, year, rating));
-
   var dataObject = {
     p : poster,
     t : title,
@@ -200,11 +192,7 @@ $('.search-result').on('click', 'input[name="add"]', function () {
     r : rating
   };
 
-  var uid = fb.getAuth().uid;
-  var token = fb.getAuth().token;
-  var postURL = `${FIREBASE_URL}/users/${uid}/movies.json?auth=${token}`;
-
-  $.post(postURL, JSON.stringify(dataObject));
+  movies.push(dataObject);
 
 });
 
@@ -219,23 +207,16 @@ $('.saved-result-table').on('click', 'input[name="delete"]', function () {
   var $movie = $(this).closest('tr');
   var id = $movie.attr('data-id');
 
-  var uid = fb.getAuth().uid;
-  var token = fb.getAuth().token;
-
-  var deleteUrl = `${FIREBASE_URL}/users/${uid}/movies/${id}.json`;
-  $.ajax({
-    url: deleteUrl,
-    type: 'DELETE',
-    success: function () {
+  movies.child(`${id}`).remove(function(err){
+    if (err) {
+      console.log(err);
+    } else {
       $movie.remove();
     }
   });
-
 });
 
 // login handling
-
-var initLoad = true;
 
 // On submit, logs a user into the page.
 $('.on-login-page form').on('submit', function() {
@@ -320,11 +301,7 @@ function clearLoginForm() {
 
 // Puts the user in the data base.
 function saveAuthData(authData) {
-  $.ajax({
-    method: 'PUT',
-    url: `${FIREBASE_URL}/users/${authData.uid}/profile.json?auth=${authData.token}`,
-    data: JSON.stringify(authData)
-  })
+  fb.child(`users/${authData.uid}/profile`).set(authData);
 }
 
 // Logs a user in using their email and password and takes a
